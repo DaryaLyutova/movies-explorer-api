@@ -60,7 +60,7 @@ const validateMoviePost = celebrate({
 
 const validateMovieDelete = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.objectId(),
+    movieId: Joi.objectId(),
   }),
 });
 

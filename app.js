@@ -6,7 +6,7 @@ const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
 const cors = require('cors');
 const { createUser, login } = require('./controllers/users');
-// const auth = require('./middlewares/auth');
+const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { validateUserBody, validateAuth } = require('./middlewares/validation');
 const movieRouter = require('./routes/movie');
@@ -50,9 +50,9 @@ app.post('/signup', validateUserBody, createUser);
 app.post('/signin', validateAuth, login);
 
 // защита авторизацией
-// app.use(auth);
+app.use(auth);
 app.use('/', movieRouter);
-
+app.use('/', usersRouter);
 app.use('/', errorRouter);
 
 // подключаем логгер ошибок
