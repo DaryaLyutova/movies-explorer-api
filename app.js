@@ -12,10 +12,12 @@ const { validateUserBody, validateAuth } = require('./middlewares/validation');
 const movieRouter = require('./routes/movie');
 const usersRouter = require('./routes/users');
 const errorRouter = require('./routes/errorUrl');
+const errorHandler = require('./errors/errorHandler');
+require('dotenv').config();
 
 const app = express();
 
-const PORT = 3000;
+const { PORT = 3000, MONGO_URL } = process.env;
 
 // app.use(cors({ origin: 'http://lutowa.darya.students.nomoredomains.monster' }));
 app.use(cors());
@@ -33,7 +35,7 @@ app.use(limiter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect('mongodb://localhost:27017/diplomadb', {
+mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -61,20 +63,7 @@ app.use(errorLogger);
 app.use(errors());
 
 // централизованный обработчик ошибок
-app.use((err, req, res, next) => {
-  // если у ошибки нет статуса, выставляем 500
-  const { statusCode = 500, message } = err;
-
-  res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  return next;
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`On port ${PORT}`);
