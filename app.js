@@ -6,11 +6,11 @@ const { errors } = require('celebrate');
 const cors = require('cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routes = require('./routes/index');
-// const errorRouter = require('./routes/errorUrl');
 const errorHandler = require('./errors/errorHandler');
 const limiter = require('./utils/limiter');
+const { MONGO_URL } = require('./config');
 
-const { PORT = 3000, MONGO_URL } = process.env;
+const { PORT = 3000 } = process.env;
 
 const app = express();
 

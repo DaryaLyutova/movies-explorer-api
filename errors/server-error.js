@@ -1,7 +1,5 @@
-// eslint-disable-next-line no-unused-vars
 const handleServerError = (err, req, res, next) => {
   const { statusCode = 500, message } = err;
-
   res
     .status(statusCode)
     .send({
@@ -10,6 +8,7 @@ const handleServerError = (err, req, res, next) => {
         ? 'На сервере произошла ошибка'
         : message,
     });
+  next();
 };
 
 module.exports = { handleServerError };
