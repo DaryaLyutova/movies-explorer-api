@@ -2,7 +2,7 @@ const Movie = require('../models/movie');
 const AllErrors = require('../errors/all-errors');
 
 const getMovies = (req, res, next) => {
-  Movie.find({}).populate('owner')
+  Movie.find({ movieId: req.user._id }).populate('owner')
     .then((movies) => {
       return res.status(200).send(movies);
     })
@@ -21,6 +21,7 @@ const createMovie = (req, res, next) => {
     nameRU,
     nameEN,
     thumbnail,
+    movieId,
   } = req.body;
   Movie.create({
     country,
@@ -34,6 +35,7 @@ const createMovie = (req, res, next) => {
     nameEN,
     thumbnail,
     owner: req.user._id,
+    movieId,
   })
     .then((movie) => { res.send(movie); })
     .catch((err) => {
