@@ -12,13 +12,11 @@ const getUsers = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
-    .then((hash) => {
-      return User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: hash,
-      });
-    })
+    .then((hash) => User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: hash,
+    }))
     .then((user) => {
       res.send({
         name: user.name,
@@ -36,27 +34,23 @@ const createUser = (req, res, next) => {
     });
 };
 
-const login = (req, res, next) => {
-  return User.findUserByCredentials(req.body.email, req.body.password)
-    .then((user) => {
-      // аутентификация успешна! пользователь в переменной user
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-      // вернём токен
-      res.send({ token });
-    })
-    .catch((err) => {
-      if (err.name === 'Error') {
-        next(new AllErrors('Неверный логин или пароль', 401));
-      }
-      return next(err);
-    });
-};
+const login = (req, res, next) => User.findUserByCredentials(req.body.email, req.body.password)
+  .then((user) => {
+    // аутентификация успешна! пользователь в переменной user
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+    // вернём токен
+    res.send({ token });
+  })
+  .catch((err) => {
+    if (err.name === 'Error') {
+      next(new AllErrors('Неверный логин или пароль', 401));
+    }
+    return next(err);
+  });
 
 const getMe = (req, res, next) => {
   User.findById(req.user._id)
-    .then((user) => {
-      return res.status(200).send(user);
-    })
+    .then((user) => res.status(200).send(user))
     .catch(next);
 };
 

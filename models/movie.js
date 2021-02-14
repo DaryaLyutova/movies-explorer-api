@@ -26,7 +26,7 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (v) => { return validator.isURL(v); },
+      validator: (v) => validator.isURL(v),
       message: 'Некоррекные данные',
     },
   },
@@ -34,7 +34,7 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (v) => { return validator.isURL(v); },
+      validator: (v) => validator.isURL(v),
       message: 'Некоррекные данные',
     },
   },
@@ -42,7 +42,7 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (v) => { return validator.isURL(v); },
+      validator: (v) => validator.isURL(v),
       message: 'Некоррекные данные',
     },
   },
@@ -60,7 +60,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
   },
   movieId: {
-    type: String,
+    type: Number,
     required: true,
     unique: true,
   },

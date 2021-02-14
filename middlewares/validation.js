@@ -135,8 +135,10 @@ const validateMoviePost = celebrate({
         'string.empty': 'поле "thumbnail" не должно быть пустым',
         'any.required': 'поле "thumbnail" обязательно для заполнения',
       }),
-    movieId: Joi.objectId().required().messages({
+    movieId: Joi.number().required().messages({
+      'number.base': 'поле "movieId" должно быть \'числом\'',
       'string.empty': 'поле "movieId" не должно быть пустым',
+      'any.required': 'поле "movieId" обязательно для заполнения',
     }),
   }),
 });

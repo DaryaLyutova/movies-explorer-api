@@ -2,10 +2,8 @@ const Movie = require('../models/movie');
 const AllErrors = require('../errors/all-errors');
 
 const getMovies = (req, res, next) => {
-  Movie.find({ movieId: req.user._id }).populate('owner')
-    .then((movies) => {
-      return res.status(200).send(movies);
-    })
+  Movie.find({ owner: req.user._id }).populate('owner')
+    .then((movies) => res.status(200).send(movies))
     .catch(next);
 };
 
@@ -52,9 +50,7 @@ const deleteMovie = (req, res, next) => {
     .then((movie) => {
       if ((movie.owner._id).toString() === req.user._id) {
         return Movie.findByIdAndRemove(req.params.movieId)
-          .then((trueMovie) => {
-            return res.send(trueMovie);
-          });
+          .then((trueMovie) => res.send(trueMovie));
       }
       throw new AllErrors('Нет прав на удаление данного фильма', 403);
     })
