@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 const User = require('../models/users');
 const AllErrors = require('../errors/all-errors');
+const {
+  errorReq, errorId, errorSameUser, errorLogin, errorNoUser, errorUpDate,
+} = require('../utils/consts');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -25,10 +28,10 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new AllErrors('Переданы некорректные данные', 400));
+        next(new AllErrors(errorReq, 400));
       }
       if (err.name === 'MongoError') {
-        next(new AllErrors('Пользователь с данным именем уже существует', 409));
+        next(new AllErrors(errorSameUser, 409));
       }
       return next(err);
     });
@@ -43,7 +46,7 @@ const login = (req, res, next) => User.findUserByCredentials(req.body.email, req
   })
   .catch((err) => {
     if (err.name === 'Error') {
-      next(new AllErrors('Неверный логин или пароль', 401));
+      next(new AllErrors(errorLogin, 401));
     }
     return next(err);
   });
@@ -57,7 +60,7 @@ const getMe = (req, res, next) => {
 const updateUser = (req, res, next) => {
   const { name, email } = req.body;
   User.findById(req.user._id)
-    .orFail(new AllErrors('Данный пользователь отсутствует', 404))
+    .orFail(new AllErrors(errorNoUser, 404))
     .then((foundUser) => {
       if (foundUser._id.toString() === req.user._id) {
         return User.findByIdAndUpdate(
@@ -71,11 +74,11 @@ const updateUser = (req, res, next) => {
           .then((user) => { res.send({ user }); });
       }
       // eslint-disable-next-line consistent-return
-      throw next(new AllErrors('Нет прав на изменение данной карточки', 403));
+      throw next(new AllErrors(errorUpDate, 403));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new AllErrors('Невалидный id', 400));
+        next(new AllErrors(errorId, 400));
       }
       return next(err);
     });

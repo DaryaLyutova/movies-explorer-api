@@ -25,14 +25,14 @@ mongoose.connect(MONGO_URL, {
 app.use(cors());
 // защитим заголовки
 app.use(helmet());
-// // ограничиваем количество запросов
-app.use(limiter);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // подключаем логгер запросов
 app.use(requestLogger);
+// ограничиваем количество запросов
+app.use(limiter);
 
 app.use(routes);
 // app.use(errorRouter);

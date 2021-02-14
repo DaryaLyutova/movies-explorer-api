@@ -1,8 +1,9 @@
 const router = require('express').Router();
+const AllErrors = require('../errors/all-errors');
+const { errorUrl } = require('../utils/consts');
 
 router.get('/*', (req, res, next) => {
-  res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
-  return next();
+  throw next(new AllErrors(errorUrl, 404));
 });
 
 module.exports = router;

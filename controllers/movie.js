@@ -1,5 +1,8 @@
 const Movie = require('../models/movie');
 const AllErrors = require('../errors/all-errors');
+const {
+  errorReq, errorMovie, errorRight, errorId,
+} = require('../utils/consts');
 
 const getMovies = (req, res, next) => {
   Movie.find({ owner: req.user._id }).populate('owner')
@@ -38,7 +41,7 @@ const createMovie = (req, res, next) => {
     .then((movie) => { res.send(movie); })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new AllErrors('Переданы некорректные данные', 400));
+        next(new AllErrors(errorReq, 400));
       }
       next(err);
     });
@@ -46,17 +49,17 @@ const createMovie = (req, res, next) => {
 
 const deleteMovie = (req, res, next) => {
   Movie.findById(req.params.movieId).populate('owner')
-    .orFail(new AllErrors('Данный фильм отсутствует', 404))
+    .orFail(new AllErrors(errorMovie, 404))
     .then((movie) => {
       if ((movie.owner._id).toString() === req.user._id) {
         return Movie.findByIdAndRemove(req.params.movieId)
           .then((trueMovie) => res.send(trueMovie));
       }
-      throw new AllErrors('Нет прав на удаление данного фильма', 403);
+      throw new AllErrors(errorRight, 403);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new AllErrors('Невалидный id', 400));
+        next(new AllErrors(errorId, 400));
       }
       return next(err);
     });
