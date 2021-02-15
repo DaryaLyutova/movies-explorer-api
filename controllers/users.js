@@ -2,7 +2,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 const User = require('../models/users');
-const AllErrors = require('../errors/all-errors');
+const NotFoundError = require('../errors/NotFoundError');
+const NoRightError = require('../errors/NoRightError');
+const IdError = require('../errors/IdError');
+const LoginError = require('../errors/IdError');
+const SameUserError = require('../errors/SameUserError');
 const {
   errorReq, errorId, errorSameUser, errorLogin, errorNoUser, errorUpDate,
 } = require('../utils/consts');
@@ -28,10 +32,10 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new AllErrors(errorReq, 400));
+        next(new IdError(errorReq));
       }
       if (err.name === 'MongoError') {
-        next(new AllErrors(errorSameUser, 409));
+        next(new SameUserError(errorSameUser));
       }
       return next(err);
     });
@@ -46,7 +50,7 @@ const login = (req, res, next) => User.findUserByCredentials(req.body.email, req
   })
   .catch((err) => {
     if (err.name === 'Error') {
-      next(new AllErrors(errorLogin, 401));
+      next(new LoginError(errorLogin));
     }
     return next(err);
   });
@@ -60,7 +64,7 @@ const getMe = (req, res, next) => {
 const updateUser = (req, res, next) => {
   const { name, email } = req.body;
   User.findById(req.user._id)
-    .orFail(new AllErrors(errorNoUser, 404))
+    .orFail(new NotFoundError(errorNoUser))
     .then((foundUser) => {
       if (foundUser._id.toString() === req.user._id) {
         return User.findByIdAndUpdate(
@@ -74,11 +78,11 @@ const updateUser = (req, res, next) => {
           .then((user) => { res.send({ user }); });
       }
       // eslint-disable-next-line consistent-return
-      throw next(new AllErrors(errorUpDate, 403));
+      throw next(new NoRightError(errorUpDate));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new AllErrors(errorId, 400));
+        next(new IdError(errorId));
       }
       return next(err);
     });

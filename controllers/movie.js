@@ -1,5 +1,9 @@
 const Movie = require('../models/movie');
-const AllErrors = require('../errors/all-errors');
+const NotFoundError = require('../errors/NotFoundError');
+const BadReqError = require('../errors/BadReqError');
+const NoRightError = require('../errors/NoRightError');
+const IdError = require('../errors/IdError');
+
 const {
   errorReq, errorMovie, errorRight, errorId,
 } = require('../utils/consts');
@@ -41,7 +45,7 @@ const createMovie = (req, res, next) => {
     .then((movie) => { res.send(movie); })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new AllErrors(errorReq, 400));
+        next(new BadReqError(errorReq));
       }
       next(err);
     });
@@ -49,17 +53,17 @@ const createMovie = (req, res, next) => {
 
 const deleteMovie = (req, res, next) => {
   Movie.findById(req.params.movieId).populate('owner')
-    .orFail(new AllErrors(errorMovie, 404))
+    .orFail(new NotFoundError(errorMovie))
     .then((movie) => {
       if ((movie.owner._id).toString() === req.user._id) {
-        return Movie.findByIdAndRemove(req.params.movieId)
+        return movie.remove()
           .then((trueMovie) => res.send(trueMovie));
       }
-      throw new AllErrors(errorRight, 403);
+      throw new NoRightError(errorRight);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new AllErrors(errorId, 400));
+        next(new IdError(errorId));
       }
       return next(err);
     });

@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
-const AllErrors = require('../errors/all-errors');
+const LoginError = require('../errors/LoginError');
 const { errorLogin, errorEmail } = require('../utils/consts');
 
 const userSchema = new mongoose.Schema({
@@ -32,13 +32,13 @@ userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new AllErrors(errorLogin, 401));
+        return Promise.reject(new LoginError(errorLogin));
       }
       // нашёлся — сравниваем хеши
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new AllErrors(errorLogin, 401));
+            return Promise.reject(new LoginError(errorLogin));
           }
 
           return user; // теперь user доступен
