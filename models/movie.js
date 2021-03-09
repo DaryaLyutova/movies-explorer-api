@@ -5,10 +5,12 @@ const { errorReq } = require('../utils/consts');
 const movieSchema = new mongoose.Schema({
   country: {
     type: String,
+    default: 'Неизвестно',
     required: true,
   },
   director: {
     type: String,
+    default: 'Неизвестно',
     required: true,
   },
   duration: {
@@ -17,14 +19,17 @@ const movieSchema = new mongoose.Schema({
   },
   year: {
     type: String,
+    default: 'Неизвестно',
     required: true,
   },
   description: {
     type: String,
+    default: 'Неизвестно',
     required: true,
   },
   image: {
     type: String,
+    default: 'https://images.puella-magi.net/thumb/2/27/No_Image_Wide.svg/1600px-No_Image_Wide.svg.png?20110202071158',
     required: true,
     validate: {
       validator: (v) => validator.isURL(v),
@@ -33,6 +38,7 @@ const movieSchema = new mongoose.Schema({
   },
   trailer: {
     type: String,
+    default: 'https://www.youtube.com/',
     required: true,
     validate: {
       validator: (v) => validator.isURL(v),
@@ -41,6 +47,7 @@ const movieSchema = new mongoose.Schema({
   },
   thumbnail: {
     type: String,
+    default: 'https://images.puella-magi.net/thumb/2/27/No_Image_Wide.svg/1600px-No_Image_Wide.svg.png?20110202071158',
     required: true,
     validate: {
       validator: (v) => validator.isURL(v),
@@ -58,6 +65,7 @@ const movieSchema = new mongoose.Schema({
   },
   nameEN: {
     type: String,
+    default: 'Неизвестно',
     required: true,
   },
   movieId: {
