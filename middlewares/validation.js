@@ -66,13 +66,13 @@ const validateUserUpdate = celebrate({
 
 const validateMoviePost = celebrate({
   body: Joi.object().keys({
-    country: Joi.string().required()
+    country: Joi.string().required().default('Неизвестно')
       .messages({
         'string.base': 'поле "country" должно быть \'текстом\'',
         'string.empty': 'поле "country" не должно быть пустым',
         'any.required': 'поле "country" обязательно для заполнения',
       }),
-    director: Joi.string().required()
+    director: Joi.string().required().default('Неизвестно')
       .messages({
         'string.base': 'поле "director" должно быть \'текстом\'',
         'string.empty': 'поле "director" не должно быть пустым',
@@ -84,13 +84,13 @@ const validateMoviePost = celebrate({
         'number.empty': 'поле "duration" не должно быть пустым',
         'any.required': 'поле "duration" обязательно для заполнения',
       }),
-    year: Joi.string().required()
+    year: Joi.string().required().default('Неизвестно')
       .messages({
         'string.base': 'поле "year" должно быть \'текстом\'',
         'string.empty': 'поле "year" не должно быть пустым',
         'any.required': 'поле "year" обязательно для заполнения',
       }),
-    description: Joi.string().required()
+    description: Joi.string().required().default('Неизвестно')
       .messages({
         'string.base': 'поле "description" должно быть \'текстом\'',
         'string.empty': 'поле "description" не должно быть пустым',
@@ -100,7 +100,7 @@ const validateMoviePost = celebrate({
       if (validator.isURL(value)) {
         return value;
       } return helpers.message('Поле "image" должно быть валидным url-адресом');
-    })
+    }).default('https://images.puella-magi.net/thumb/2/27/No_Image_Wide.svg/1600px-No_Image_Wide.svg.png?20110202071158')
       .messages({
         'string.empty': 'поле "image" не должно быть пустым',
         'any.required': 'поле "image" обязательно для заполнения',
@@ -109,7 +109,7 @@ const validateMoviePost = celebrate({
       if (validator.isURL(value)) {
         return value;
       } return helpers.message('Поле " trailer" должно быть валидным url-адресом');
-    })
+    }).default('https://www.youtube.com/')
       .messages({
         'string.empty': 'поле "trailer" не должно быть пустым',
         'any.required': 'поле "trailer" обязательно для заполнения',
@@ -120,7 +120,7 @@ const validateMoviePost = celebrate({
         'string.empty': 'поле "nameRU" не должно быть пустым',
         'any.required': 'поле "nameRU" обязательно для заполнения',
       }),
-    nameEN: Joi.string().required()
+    nameEN: Joi.string().required().default('Unknown')
       .messages({
         'string.base': 'поле "nameEN" должно быть \'текстом\'',
         'string.empty': 'поле "nameEN" не должно быть пустым',
@@ -130,7 +130,7 @@ const validateMoviePost = celebrate({
       if (validator.isURL(value)) {
         return value;
       } return helpers.message('Поле "thumbnail" должно быть валидным url-адресом');
-    })
+    }).default('https://images.puella-magi.net/thumb/2/27/No_Image_Wide.svg/1600px-No_Image_Wide.svg.png?20110202071158')
       .messages({
         'string.empty': 'поле "thumbnail" не должно быть пустым',
         'any.required': 'поле "thumbnail" обязательно для заполнения',
